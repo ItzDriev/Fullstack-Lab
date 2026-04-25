@@ -42,7 +42,7 @@ function LoginForm({ setRegister }: Props) {
         </div>
         <div className="mt-7 text-white">
           <label
-            htmlFor="username"
+            htmlFor="password"
             className="block mb-1 font-light text-[#94A3B8]"
           >
             Password
@@ -50,7 +50,7 @@ function LoginForm({ setRegister }: Props) {
           <div className="flex items-center gap-3 pb-3 border-[#122030] border-b">
             <KeyRound className="text-[#94A3B8]" />
             <InputField
-              id="username"
+              id="password"
               type={passShown ? "Text" : "Password"}
               placeholder={"Enter Password"}
               className="border-none w-full h-10"
@@ -60,9 +60,9 @@ function LoginForm({ setRegister }: Props) {
               onClick={() => setPassShown(!passShown)}
             >
               {passShown ? (
-                <i className="ml-2 text-white text-xl cursor-pointer fa-fw fa-solid fa-eye" />
+                <i className="ml-2 text-[#94A3B8] text-xl cursor-pointer fa-fw fa-solid fa-eye" />
               ) : (
-                <i className="ml-2 text-white text-xl cursor-pointer fa-fw fa-sharp fa-solid fa-eye-slash" />
+                <i className="ml-2 text-[#94A3B8] text-xl cursor-pointer fa-fw fa-sharp fa-solid fa-eye-slash" />
               )}
             </div>
           </div>
