@@ -1,111 +1,132 @@
+@import "tailwindcss";
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --navBG: rgba(36, 38, 58);
+  --mainBG: rgba(25, 28, 43);
+  --alternating1: rgb(27, 28, 43);
+  --alternating2: rgb(23, 25, 39);
+}
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+/*Rotating border animation*/
+@property --border-angle {
+  inherits: false;
+  initial-value: 0deg;
+  syntax: "<angle>";
+}
+@keyframes border-rotate {
+  to {
+    --border-angle: 360deg;
+  }
+}
+.animate-border {
+  animation: border-rotate 4s linear infinite;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* background uses the element's current bg color */
+  background:
+    linear-gradient(45deg, #ffffff, #e7e7e7 50%, #ffffff) padding-box,
+    conic-gradient(
+        from var(--border-angle),
+        transparent 40%,
+        rgba(220, 38, 38, 0.5) 84%,
+        rgba(239, 68, 68, 0.6) 88%,
+        #ef4444 90%,
+        rgba(239, 68, 68, 0.6) 92%,
+        transparent 100%
+      )
+      border-box;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  border: 4px solid transparent;
+  border-radius: 50%;
+}
+
+/*Fade IN animation*/
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+.animate-fadeIn {
+  opacity: 0;
+  animation: fadeIn 0.08s ease-in forwards;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+@utility bg-p1-darkest {
+  background-color: #000105;
+}
+@utility bg-palette1-dark {
+  background-color: #0c0c13;
+}
+@utility bg-palette1-gray {
+  background-color: #000512;
+}
+@utility bg-palette1-red {
+  background-color: #100107;
+}
+@utility bg-palette1-dark-red {
+  background-color: #100406;
+}
+
+details {
+  max-width: 500px;
+  overflow: hidden; /* Keep this line to prevent an odd blue outline around the element in Safari. */
+}
+
+summary {
+  display: block;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+span.details-span {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  background: var(--navBG);
+  color: #fff;
+  height: 4rem;
+}
+
+span.details-span:hover {
+  cursor: pointer;
+}
+
+span.details-span > i {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+  transition: rotate 200ms 200ms ease-out;
+}
+
+div.content {
   box-sizing: border-box;
+  max-width: 500px;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 10px;
+  transition:
+    max-height 200ms ease-out,
+    border 0ms 200ms linear;
 }
 
-body {
-  margin: 0;
+details[open] + div.content {
+  max-height: 800px; /* Set a max-height value enough to show all the content */
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+  border-color: var(--navBG);
+  transition:
+    max-height 400ms ease-out,
+    border 0ms linear;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+details[open] span.details-span > i {
+  rotate: 90deg;
+  transition: rotate 200ms ease-out;
 }
