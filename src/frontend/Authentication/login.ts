@@ -1,3 +1,4 @@
+import { API_URL } from "../config.ts";
 export async function login(username: string, password: string) {
   if (
     username.trim() === "" ||
@@ -8,7 +9,7 @@ export async function login(username: string, password: string) {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),

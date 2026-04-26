@@ -4,6 +4,7 @@ import NavLink from "./NavLink.tsx";
 import NavLinkDropDown from "./NavLinkDropDown.tsx";
 import BigButton from "../Components/BigButton.tsx";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
   const hoverEffects =
@@ -14,6 +15,7 @@ function Navbar() {
   const [navOpen, setNavOpen] = useState(false);
   const toggleNav = () => setNavOpen(!navOpen);
   const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuth();
 
   //track if burger menu is open
   //const [isOpen, setIsOpen] = useState(false);
@@ -50,9 +52,9 @@ function Navbar() {
         </nav>
 
         <BigButton
-          text={"Login"}
+          text={isLoggedIn ? "Logout" : "Login"}
           className="shadow-none mr-8 px-2! py-2! text-sm!"
-          onClick={() => navigate("/login")}
+          onClick={isLoggedIn ? logout : () => navigate("/login")}
         />
 
         {/*THe burger Menu */}

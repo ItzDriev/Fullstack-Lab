@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { API_URL } from "../config.ts";
 
 interface User {
   userId: string;
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function checkAuth() {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/me", {
+      const response = await fetch(`${API_URL}/api/auth/me`, {
         credentials: "include",
       });
 
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function logout() {
     try {
-      await fetch("http://localhost:3000/api/auth/logout", {
+      await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
