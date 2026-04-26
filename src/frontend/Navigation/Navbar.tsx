@@ -2,17 +2,18 @@
 import { useState } from "react";
 import NavLink from "./NavLink.tsx";
 import NavLinkDropDown from "./NavLinkDropDown.tsx";
+import BigButton from "../Components/BigButton.tsx";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const hoverEffects =
     "relative after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-red-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 hover:text-red-500 transition-colors duration-300";
 
-  const hoverColorBright = " hover:bg-red-400";
-  const dropDownStyle = " h-14 flex items-center" + hoverColorBright;
   const sidebarNavLinkStyle = " pt-5";
 
   const [navOpen, setNavOpen] = useState(false);
   const toggleNav = () => setNavOpen(!navOpen);
+  const navigate = useNavigate();
 
   //track if burger menu is open
   //const [isOpen, setIsOpen] = useState(false);
@@ -33,10 +34,26 @@ function Navbar() {
           <NavLink to={"/"} text={"Home"} className={hoverEffects} />
           <NavLink
             to={"/BIGBLACKBROLICDUDES"}
+            text={"Services"}
+            className={hoverEffects}
+          />
+          <NavLink
+            to={"/BIGBLACKBROLICDUDES"}
             text={"About"}
             className={hoverEffects}
           />
+          <NavLink
+            to={"/BIGBLACKBROLICDUDES"}
+            text={"Contact"}
+            className={hoverEffects}
+          />
         </nav>
+
+        <BigButton
+          text={"Login"}
+          className="shadow-none mr-8 px-2! py-2! text-sm!"
+          onClick={() => navigate("/login")}
+        />
 
         {/*THe burger Menu */}
         <div

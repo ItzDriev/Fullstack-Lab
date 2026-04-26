@@ -5,10 +5,16 @@ import "./index.css";
 import HomePage from "./frontend/Home/HomePage";
 import NotFoundPage from "./frontend/Components/NotFoundPage.tsx";
 import LoginPage from "./frontend/Authentication/LoginPage.tsx";
+import { AuthProvider } from "./frontend/context/AuthContext.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <HomePage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/login",
     element: <LoginPage />,
     errorElement: <NotFoundPage />,
   },
@@ -16,6 +22,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );

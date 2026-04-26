@@ -3,6 +3,7 @@ import { User, Key, Eye, EyeOff, KeyRound, Mail, BookUser } from "lucide-react";
 import InputField from "../Components/InputField";
 import BigButton from "../Components/BigButton";
 import NavLink from "../Navigation/NavLink";
+import { register } from "./register.ts";
 
 interface Props {
   setRegister: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,6 +11,20 @@ interface Props {
 
 function LoginForm({ setRegister }: Props) {
   const [passShown, setPassShown] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleRegister() {
+    const result = await register(fullName, username, email, password);
+
+    if (result.success) {
+      setRegister(false);
+    } else {
+      console.log(result.error);
+    }
+  }
 
   return (
     <div className="flex justify-center items-center bg-[#051424]/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-lg border border-[#122030] w-1/4 min-h-3/4">
@@ -37,6 +52,8 @@ function LoginForm({ setRegister }: Props) {
               id="name"
               placeholder={"Enter Full Name"}
               className="border-none w-full h-10"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
         </div>
@@ -53,6 +70,8 @@ function LoginForm({ setRegister }: Props) {
               id="username"
               placeholder={"Enter Username"}
               className="border-none w-full h-10"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
         </div>
@@ -69,6 +88,8 @@ function LoginForm({ setRegister }: Props) {
               id="email"
               placeholder={"Enter Email Address"}
               className="border-none w-full h-10"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
@@ -86,6 +107,8 @@ function LoginForm({ setRegister }: Props) {
               type={passShown ? "Text" : "Password"}
               placeholder={"Enter Password"}
               className="border-none w-full h-10"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <div
               className="flex justify-center ml-2 w-6 cursor-pointer"
@@ -99,7 +122,11 @@ function LoginForm({ setRegister }: Props) {
             </div>
           </div>
         </div>
-        <BigButton text={"REGISTER"} className="mt-15" />
+        <BigButton
+          text={"REGISTER"}
+          className="mt-15 w-full"
+          onClick={handleRegister}
+        />
 
         <div className="flex justify-between items-center gap-3 mt-3 mb-10 pb-10 border-[#122030] border-b">
           <NavLink

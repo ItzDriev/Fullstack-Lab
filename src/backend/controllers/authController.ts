@@ -1,60 +1,66 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import JWTModel from "../models/JWT.ts";
 import { User } from "../models/User.ts";
 
 export async function register(req: Request, res: Response): Promise<void> {
   try {
-    const { username, email, password } = req.body;
+    const { fullName, username, email, password } = req.body;
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
 
     if (existingUser) {
-      res.status(400).json({ error: "Username or email already exists" });
+      res
+        .status(400)
+        .json({ success: false, error: "Username or email already exists" });
       return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
+      fullName,
       username,
       email,
       password: hashedPassword,
     });
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully", userId: user._id });
+    res.status(201).json({
+      success: true,
+      data: { userId: user._id, username: user.username },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Registration failed" });
+    res.status(500).json({ success: false, error: "Registration failed" });
   }
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
+    console.log("Login attempt:", { username, password });
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
+    console.log("User found:", user);
 
     if (!user) {
-      res.status(401).json({ error: "Invalid email or password" });
+      res
+        .status(401)
+        .json({ success: false, error: "Invalid username or password" });
       return;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.status(401).json({ error: "Invalid email or password" });
+      res
+        .status(401)
+        .json({ success: false, error: "Invalid username or password" });
       return;
     }
 
-    const token = jwt.sign(
-      { userId: user._id, username: user.username },
-      process.env.JWT_SECRET!,
-      { expiresIn: "24h" },
-    );
+    const token = JWTModel.sign({ userId: user._id, username: user.username });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -63,13 +69,17 @@ export async function login(req: Request, res: Response): Promise<void> {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.json({ message: "Login successful", username: user.username });
+    res.json({
+      success: true,
+      data: { userId: user._id, username: user.username },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Login failed" });
+    console.error("Login error:", error);
+    res.status(500).json({ success: false, error: "Login failed" });
   }
 }
 
 export async function logout(req: Request, res: Response): Promise<void> {
   res.clearCookie("token");
-  res.json({ message: "Logged out successfully" });
+  res.json({ success: true, message: "Logged out successfully" });
 }

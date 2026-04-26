@@ -7,4 +7,5 @@ export const dbOptions = {
     password: process.env.DB_PWD,
   },
   authSource: "admin",
+  dbName: "lab",
 };
