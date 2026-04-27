@@ -79,6 +79,22 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 }
 
+export async function getProfile(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = res.locals.jwt?.userId || (req as any).user?.userId;
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      res.status(404).json({ success: false, error: "User not found" });
+      return;
+    }
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to fetch profile" });
+  }
+}
+
 export async function logout(req: Request, res: Response): Promise<void> {
   res.clearCookie("token");
   res.json({ success: true, message: "Logged out successfully" });

@@ -2,7 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function ProfileIcon() {
+interface Props {
+  className?: string;
+  dropDown?: boolean;
+}
+
+function ProfileIcon({ className, dropDown }: Props) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -36,13 +41,16 @@ function ProfileIcon() {
   return (
     <div className="left-0 z-[100] relative mr-8" ref={dropdownRef}>
       <div
-        className="flex justify-center items-center bg-amber-100 rounded-4xl hover:outline-2 hover:outline-red-500 w-12 h-12 font-bold text-2xl cursor-pointer select-none"
+        className={
+          "flex justify-center items-center bg-red-500 rounded-full  w-12 h-12 font-bold text-white text-2xl cursor-pointer select-none " +
+          className
+        }
         onClick={() => setOpen(!open)}
       >
         {user?.username.charAt(0)}
       </div>
 
-      {open && (
+      {open && dropDown && (
         <div className="-right-5 absolute bg-[#0a1628] shadow-lg mt-2 border border-[#122030] rounded w-48">
           <div className="px-4 py-3 border-[#122030] border-b">
             <p className="font-bold text-white text-sm">{user?.username}</p>

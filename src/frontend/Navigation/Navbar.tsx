@@ -1,13 +1,22 @@
 import { useState } from "react";
 import NavLink from "./NavLink.tsx";
 import BigButton from "../Components/BigButton.tsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ProfileIcon from "./ProfileIcon.tsx";
 
 function Navbar() {
+  const location = useLocation();
+
   const hoverEffects =
     "relative after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-red-500 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 hover:text-red-500 transition-colors duration-300";
+
+  const activeStyle =
+    "relative text-red-500 after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-red-500 after:scale-x-100";
+
+  function getLinkStyle(path: string) {
+    return location.pathname === path ? activeStyle : hoverEffects;
+  }
 
   const [navOpen, setNavOpen] = useState(false);
   const toggleNav = () => setNavOpen(!navOpen);
@@ -27,18 +36,29 @@ function Navbar() {
         />
 
         <nav className="hidden md:flex items-center gap-10 h-full">
-          <NavLink to={"/"} text={"Home"} className={hoverEffects} />
+          <NavLink to={"/"} text={"Home"} className={getLinkStyle("/")} />
           <NavLink
             to={"/services"}
             text={"Services"}
-            className={hoverEffects}
+            className={getLinkStyle("/services")}
           />
-          <NavLink to={"/about"} text={"About"} className={hoverEffects} />
-          <NavLink to={"/contact"} text={"Contact"} className={hoverEffects} />
+          <NavLink
+            to={"/about"}
+            text={"About"}
+            className={getLinkStyle("/about")}
+          />
+          <NavLink
+            to={"/contact"}
+            text={"Contact"}
+            className={getLinkStyle("/contact")}
+          />
         </nav>
 
         {isLoggedIn ? (
-          <ProfileIcon />
+          <ProfileIcon
+            className="hover:outline-2 hover:outline-white"
+            dropDown={true}
+          />
         ) : (
           <BigButton
             text="Login"
@@ -73,14 +93,22 @@ function Navbar() {
         className={`fixed flex justify-center top-16 right-0 h-full w-[50%] bg-(--navBG) z-50 transform transition-transform duration-300 ease-in-out md:hidden ${navOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex flex-col">
-          <NavLink to={"/"} text={"Home"} className={hoverEffects} />
+          <NavLink to={"/"} text={"Home"} className={getLinkStyle("/")} />
           <NavLink
             to={"/services"}
             text={"Services"}
-            className={hoverEffects}
+            className={getLinkStyle("/services")}
           />
-          <NavLink to={"/about"} text={"About"} className={hoverEffects} />
-          <NavLink to={"/contact"} text={"Contact"} className={hoverEffects} />
+          <NavLink
+            to={"/about"}
+            text={"About"}
+            className={getLinkStyle("/about")}
+          />
+          <NavLink
+            to={"/contact"}
+            text={"Contact"}
+            className={getLinkStyle("/contact")}
+          />
         </div>
       </nav>
 

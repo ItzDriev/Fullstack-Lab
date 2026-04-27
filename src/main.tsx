@@ -6,6 +6,8 @@ import HomePage from "./frontend/Home/HomePage";
 import NotFoundPage from "./frontend/Components/NotFoundPage.tsx";
 import LoginPage from "./frontend/Authentication/LoginPage.tsx";
 import { AuthProvider } from "./frontend/context/AuthContext.tsx";
+import ProfilePage from "./frontend/Profile/ProfilePage.tsx";
+import ServicesPage from "./frontend/Services/ServicesPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +18,16 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/services",
+    element: <ServicesPage />,
     errorElement: <NotFoundPage />,
   },
 ]);
