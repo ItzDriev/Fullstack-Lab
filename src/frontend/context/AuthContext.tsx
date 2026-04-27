@@ -5,6 +5,7 @@ import { API_URL } from "../config.ts";
 interface User {
   userId: string;
   username: string;
+  profilePicture?: string;
 }
 
 interface AuthContextType {
@@ -13,6 +14,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   loading: boolean;
   logout: () => Promise<void>;
+  updateProfilePicture: (base64: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -57,6 +59,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function updateProfilePicture(base64: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/profile/picture`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profilePicture: base64 }),
+        credentials: "include",
+      });
+
+      const res = await response.json();
+
+      if (res.success) {
+        setUser((prev) => (prev ? { ...prev, profilePicture: base64 } : null));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Upload failed:", error);
+      return false;
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -65,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoggedIn: user !== null,
         loading,
         logout,
+        updateProfilePicture,
       }}
     >
       {children}

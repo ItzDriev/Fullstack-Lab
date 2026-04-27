@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
@@ -12,14 +12,17 @@ interface ProfileData {
   fullName: string;
   username: string;
   email: string;
+  profilePicture: string;
   createdAt: string;
 }
 
 function ProfilePage() {
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, loading, updateProfilePicture } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !isLoggedIn) {
@@ -41,13 +44,58 @@ function ProfilePage() {
       const res = await response.json();
 
       if (res.success) {
-        setProfile(res.ProfileData);
+        setProfile(res.data);
       } else {
         setError(res.error);
       }
     } catch (e) {
       setError("Failed to load profile");
     }
+  }
+
+  function handleAvatarClick() {
+    fileInputRef.current?.click();
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Image must be smaller than 2MB");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      const success = await updateProfilePicture(base64);
+
+      if (success) {
+        setProfile((prev) =>
+          prev ? { ...prev, profilePicture: base64 } : null,
+        );
+      } else {
+        setError("Failed to upload picture");
+      }
+
+      setUploading(false);
+    };
+
+    reader.onerror = () => {
+      setError("Failed to read file");
+      setUploading(false);
+    };
+
+    reader.readAsDataURL(file);
   }
 
   if (loading) {
@@ -66,7 +114,22 @@ function ProfilePage() {
     <>
       <Navbar />
       <main className="w-full h-[calc(100vh-4rem)] bg-(--mainBG) flex flex-col items-center">
-        <ProfileHeader />
+        <ProfileHeader
+          uploading={uploading}
+          onAvatarClick={handleAvatarClick}
+        />
+
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
+        {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
+
         <section className="flex gap-40 mt-20">
           <UpcomingSessions />
           <SessionHistory />

@@ -2,12 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-interface Props {
+interface ProfileIconProps {
   className?: string;
   dropDown?: boolean;
 }
 
-function ProfileIcon({ className, dropDown }: Props) {
+function ProfileIcon({ className = "", dropDown = true }: ProfileIconProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -39,15 +39,22 @@ function ProfileIcon({ className, dropDown }: Props) {
   }
 
   return (
-    <div className="left-0 z-[100] relative mr-8" ref={dropdownRef}>
+    <div className="z-[100] relative mr-8" ref={dropdownRef}>
       <div
-        className={
-          "flex justify-center items-center bg-red-500 rounded-full  w-12 h-12 font-bold text-white text-2xl cursor-pointer select-none " +
-          className
-        }
+        className={`flex justify-center items-center rounded-full w-12 h-12 font-bold text-2xl cursor-pointer select-none overflow-hidden ${className}`}
         onClick={() => setOpen(!open)}
       >
-        {user?.username.charAt(0)}
+        {user?.profilePicture ? (
+          <img
+            src={user.profilePicture}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="flex justify-center items-center bg-red-500 w-full h-full text-white">
+            {user?.username.charAt(0)}
+          </div>
+        )}
       </div>
 
       {open && dropDown && (

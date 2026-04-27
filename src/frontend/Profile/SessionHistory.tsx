@@ -6,7 +6,6 @@ interface HistoryEntry {
   date: string;
   coach: string;
   coachAvatar?: string;
-  rating: number;
 }
 
 interface SessionHistoryProps {
@@ -16,24 +15,21 @@ interface SessionHistoryProps {
 const defaultHistory: HistoryEntry[] = [
   {
     id: "1",
-    topic: "Crosshair Placement Drill",
-    date: "OCT 12, 2024",
-    coach: "Alex Chen",
-    rating: 5,
+    topic: "Naxxramas VOD Review",
+    date: "APR 22, 2026",
+    coach: "Driev",
   },
   {
     id: "2",
-    topic: "Mid-Game Decision Making",
-    date: "OCT 08, 2024",
-    coach: "Viktor Reznov",
-    rating: 5,
+    topic: "Roatation Practice",
+    date: "APR 18, 2026",
+    coach: "Driev",
   },
   {
     id: "3",
-    topic: "Utility Usage Mastery",
-    date: "OCT 01, 2024",
-    coach: "Sarah Jenkins",
-    rating: 5,
+    topic: "Hands on Session",
+    date: "APR 14, 2026",
+    coach: "Driev",
   },
 ];
 
@@ -52,15 +48,12 @@ function SessionHistory({ sessions = defaultHistory }: SessionHistoryProps) {
       {/* Table */}
       <div className="bg-[#0d1b2a] border border-[#1a2d42] rounded-lg overflow-hidden">
         {/* Table Header */}
-        <div className="grid grid-cols-4 px-5 py-3 border-[#1a2d42] border-b">
+        <div className="flex flex-row justify-between px-5 py-3 border-[#1a2d42] border-b">
           <span className="font-semibold text-[#4a6274] text-xs uppercase tracking-wider">
             Session Topic
           </span>
           <span className="font-semibold text-[#4a6274] text-xs uppercase tracking-wider">
-            Lead Coach
-          </span>
-          <span className="font-semibold text-[#4a6274] text-xs uppercase tracking-wider">
-            Rating
+            Coach
           </span>
           <span className="font-semibold text-[#4a6274] text-xs text-right uppercase tracking-wider">
             Action
@@ -91,20 +84,6 @@ function HistoryRow({ session }: { session: HistoryEntry }) {
           {session.coach.charAt(0)}
         </div>
         <span className="text-[#94A3B8] text-sm">{session.coach}</span>
-      </div>
-
-      {/* Rating */}
-      <div className="flex gap-0.5">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className={`w-4 h-4 ${
-              i < session.rating
-                ? "text-red-500 fill-red-500"
-                : "text-[#1a2d42]"
-            }`}
-          />
-        ))}
       </div>
 
       {/* Action */}
