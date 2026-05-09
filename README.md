@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# Driev Coaching — Fullstack Lab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fullstack web application built with React, Vite, TypeScript, TailwindCSS, Express, and MongoDB Atlas.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Before you begin, make sure you have the following installed:
 
-## React Compiler
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Git](https://git-scm.com/)
+- A [MongoDB Atlas](https://www.mongodb.com/atlas) account with a cluster set up
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
+### 1. Clone the Repository
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/YOUR_USERNAME/FULLSTACK-LAB.git
+cd FULLSTACK-LAB
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+MONGO_URI=mongodb+srv://<cluster>.mongodb.net/lab?appName=DrievDB
+DB_USER=your_atlas_username
+DB_PWD=your_atlas_password
+PORT=5000
+JWT_SECRET=your-secret-key-here
+```
+
+Replace the placeholder values with your actual MongoDB Atlas credentials. You can find your connection string in the Atlas dashboard under **Connect → Drivers**.
+
+Make sure your IP address is whitelisted in Atlas under **Network Access** (use `0.0.0.0/0` for development to allow all IPs).
+
+### 4. Running the Application
+
+Run both the frontend and backend simultaneously:
+
+```bash
+npm run concurrent
+```
+
+Or run them separately in two terminals:
+
+```bash
+# Terminal 1 — Frontend (Vite dev server on http://localhost:5173)
+npm run dev
+
+# Terminal 2 — Backend (Express server on http://localhost:5000)
+npm run dev:backend
+```
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint                  | Description             | Auth Required |
+| ------ | ------------------------- | ----------------------- | ------------- |
+| POST   | /api/auth/register        | Register a new user     | No            |
+| POST   | /api/auth/login           | Login with username     | No            |
+| POST   | /api/auth/logout          | Logout and clear cookie | No            |
+| GET    | /api/auth/me              | Get current user        | Yes           |
+| GET    | /api/auth/profile         | Get full profile data   | Yes           |
+| PUT    | /api/auth/profile/picture | Upload profile picture  | Yes           |
+
+### Sessions
+
+| Method | Endpoint               | Description            | Auth Required |
+| ------ | ---------------------- | ---------------------- | ------------- |
+| POST   | /api/sessions          | Purchase a session     | Yes           |
+| GET    | /api/sessions          | Get all user sessions  | Yes           |
+| GET    | /api/sessions/upcoming | Get upcoming sessions  | Yes           |
+| GET    | /api/sessions/history  | Get completed sessions | Yes           |
