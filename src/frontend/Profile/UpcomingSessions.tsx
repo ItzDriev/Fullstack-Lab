@@ -39,7 +39,7 @@ function UpcomingSessions({
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-white text-lg">Upcoming Sessions</h2>
+        <h2 className="font-semibold text-white text-lg">Upcoming</h2>
         <span className="text-red-400 hover:text-red-300 text-sm transition-colors cursor-pointer">
           View All
         </span>

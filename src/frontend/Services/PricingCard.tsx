@@ -1,13 +1,12 @@
 import { ArrowRight, CheckCircle, Clock } from "lucide-react";
 import type { ServiceTier } from "./serviceTiers.ts";
 
-function PricingCard({
-  tier,
-  onSelect,
-}: {
+interface Props {
   tier: ServiceTier;
   onSelect: () => void;
-}) {
+}
+
+function PricingCard({ tier, onSelect }: Props) {
   return (
     <div
       className={`relative bg-[#0d1b2a] border rounded-lg overflow-hidden transition-all duration-300 hover:translate-y-[-4px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] h-full flex flex-col ${

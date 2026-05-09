@@ -1,4 +1,9 @@
-function StatBlock({ number, label }: { number: string; label: string }) {
+interface Props {
+  number: string;
+  label: string;
+}
+
+function StatBlock({ number, label }: Props) {
   return (
     <div className="text-center">
       <span className="font-bold text-red-400 text-4xl">{number}</span>
