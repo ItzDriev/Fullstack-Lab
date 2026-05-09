@@ -2,6 +2,10 @@
 
 A fullstack web application built with React, Vite, TypeScript, TailwindCSS, Express, and MongoDB Atlas.
 
+## Problem Statement
+
+As a top-5 Warrior player in World of Warcraft Classic, managing coaching sessions with multiple other players across VOD reviews and hands-on training was disorganized — this was made as a platform to manage that
+
 ## Prerequisites
 
 Before you begin, make sure you have the following installed:
