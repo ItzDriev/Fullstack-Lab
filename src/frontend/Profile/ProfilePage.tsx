@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../config";
 import Navbar from "../Navigation/Navbar";
 import Footer from "../Navigation/Footer";
 import UpcomingSessions from "./UpcomingSessions";
 import SessionHistory from "./SessionHistory";
 import ProfileHeader from "./ProfileHeader";
+import {
+  fetchProfile,
+  fetchUpcomingSessions,
+  fetchSessionHistory,
+} from "./profileApi.ts";
 
 interface ProfileData {
   fullName: string;
@@ -19,10 +23,12 @@ interface ProfileData {
 function ProfilePage() {
   const { isLoggedIn, loading, updateProfilePicture } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const navigate = useNavigate();
+  const [upcoming, setUpcoming] = useState([]);
+  const [history, setHistory] = useState([]);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !isLoggedIn) {
@@ -31,26 +37,20 @@ function ProfilePage() {
     }
 
     if (isLoggedIn) {
-      fetchProfile();
+      loadProfileData();
     }
   }, [isLoggedIn, loading, navigate]);
 
-  async function fetchProfile() {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
-        credentials: "include",
-      });
+  async function loadProfileData() {
+    const profileResult = await fetchProfile();
+    if (profileResult.success) setProfile(profileResult.data);
+    else setError(profileResult.error);
 
-      const res = await response.json();
+    const upcomingResult = await fetchUpcomingSessions();
+    if (upcomingResult.success) setUpcoming(upcomingResult.data);
 
-      if (res.success) {
-        setProfile(res.data);
-      } else {
-        setError(res.error);
-      }
-    } catch (e) {
-      setError("Failed to load profile");
-    }
+    const historyResult = await fetchSessionHistory();
+    if (historyResult.success) setHistory(historyResult.data);
   }
 
   function handleAvatarClick() {
@@ -86,7 +86,6 @@ function ProfilePage() {
       } else {
         setError("Failed to upload picture");
       }
-
       setUploading(false);
     };
 
@@ -113,13 +112,12 @@ function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="w-full h-[calc(100vh-4rem)] bg-(--mainBG) flex flex-col items-center">
+      <main className="w-full min-h-[calc(100vh-4rem)] bg-(--mainBG) flex flex-col items-center">
         <ProfileHeader
           uploading={uploading}
           onAvatarClick={handleAvatarClick}
         />
 
-        {/* Hidden file input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -131,8 +129,8 @@ function ProfilePage() {
         {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
 
         <section className="flex gap-40 mt-20">
-          <UpcomingSessions />
-          <SessionHistory />
+          <UpcomingSessions sessions={upcoming} />
+          <SessionHistory sessions={history} />
         </section>
       </main>
       <Footer />

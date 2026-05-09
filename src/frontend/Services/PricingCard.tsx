@@ -56,7 +56,7 @@ function PricingCard({
               : "border border-[#1a2d42] text-[#94A3B8] hover:border-red-500/40 hover:text-white"
           }`}
         >
-          Get Started
+          Buy
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

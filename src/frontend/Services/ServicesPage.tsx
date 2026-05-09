@@ -8,9 +8,11 @@ import { useAuth } from "../context/AuthContext";
 import ServiceTab from "./ServiceTab";
 import FeatureCard from "./FeatureCard";
 import PricingCard from "./PricingCard";
+import { purchaseSession } from "./purchaseSession.ts";
 
 function ServicesPage() {
   const [activeTab, setActiveTab] = useState<"vod" | "handson">("vod");
+  const [purchaseError, setPurchaseError] = useState("");
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
 
@@ -115,16 +117,34 @@ function ServicesPage() {
 
         {/* Pricing Cards */}
         <section className="mx-auto px-8 pb-20 max-w-5xl">
+          {purchaseError && (
+            <p className="mb-4 text-red-400 text-sm text-center">
+              {purchaseError}
+            </p>
+          )}
           <div className="gap-6 grid grid-cols-3">
             {(activeTab === "vod" ? vodTiers : handsonTiers).map((tier) => (
               <PricingCard
                 key={tier.name}
                 tier={tier}
-                onSelect={() => {
-                  if (isLoggedIn) {
-                    navigate("/dashboard");
-                  } else {
+                onSelect={async () => {
+                  if (!isLoggedIn) {
                     navigate("/login");
+                    return;
+                  }
+
+                  setPurchaseError("");
+                  const result = await purchaseSession(
+                    activeTab,
+                    tier.name,
+                    tier.price,
+                    tier.duration,
+                  );
+
+                  if (result.success) {
+                    navigate("/profile");
+                  } else {
+                    setPurchaseError(result.error);
                   }
                 }}
               />
