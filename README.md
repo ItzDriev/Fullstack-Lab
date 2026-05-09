@@ -6,7 +6,7 @@ A fullstack web application built with React, Vite, TypeScript, TailwindCSS, Exp
 
 Before you begin, make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) (v18 or higher)
+- [Node.js](https://nodejs.org/)
 - [Git](https://git-scm.com/)
 - A [MongoDB Atlas](https://www.mongodb.com/atlas) account with a cluster set up
 
@@ -15,8 +15,8 @@ Before you begin, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/FULLSTACK-LAB.git
-cd FULLSTACK-LAB
+git clone https://github.com/ItzDriev/Fullstack-Lab.git
+cd Fullstack-Lab
 ```
 
 ### 2. Install Dependencies
@@ -52,10 +52,10 @@ npm run concurrent
 Or run them separately in two terminals:
 
 ```bash
-# Terminal 1 — Frontend (Vite dev server on http://localhost:5173)
+# Terminal 1 — Frontend
 npm run dev
 
-# Terminal 2 — Backend (Express server on http://localhost:5000)
+# Terminal 2 — Backend
 npm run dev:backend
 ```
 
