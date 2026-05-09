@@ -1,13 +1,7 @@
-import { MoreVertical, User } from "lucide-react";
-
-interface Session {
-  id: string;
-  title: string;
-  coach: string;
-  date: string;
-  time: string;
-  isUpcoming?: boolean;
-}
+import { useState } from "react";
+import SessionModal from "./SessionModal";
+import SessionCard from "./SessionCard";
+import type { Session } from "./types.ts";
 
 interface UpcomingSessionsProps {
   sessions?: Session[];
@@ -35,60 +29,44 @@ const defaultSessions: Session[] = [
 function UpcomingSessions({
   sessions = defaultSessions,
 }: UpcomingSessionsProps) {
-  return (
-    <div>
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-white text-lg">Upcoming</h2>
-        <span className="text-red-400 hover:text-red-300 text-sm transition-colors cursor-pointer">
-          View All
-        </span>
-      </div>
+  const [modalOpen, setModalOpen] = useState(false);
 
-      {/* Session Cards */}
-      <div className="space-y-4">
-        {sessions.map((session) => (
-          <SessionCard key={session.id} session={session} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SessionCard({ session }: { session: Session }) {
   return (
-    <div className="bg-[#0d1b2a] p-5 border border-[#1a2d42] hover:border-[#243b53] rounded-lg transition-colors">
-      <div className="flex justify-between items-start">
-        <div>
-          {/* Date/Time Badge */}
+    <>
+      <div className="w-80">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-semibold text-white text-lg">Upcoming</h2>
           <span
-            className={`inline-block px-3 py-1 rounded text-xs font-semibold tracking-wider uppercase mb-3 ${
-              session.isUpcoming
-                ? "border border-red-500 text-red-400"
-                : "bg-[#1a2d42] text-[#94A3B8]"
-            }`}
+            className="text-red-400 hover:text-red-300 text-sm transition-colors cursor-pointer"
+            onClick={() => setModalOpen(true)}
           >
-            {session.date} · {session.time}
+            View All
           </span>
-
-          {/* Title */}
-          <h3 className="mb-2 font-semibold text-white text-base">
-            {session.title}
-          </h3>
-
-          {/* Coach */}
-          <div className="flex items-center gap-2 text-[#94A3B8] text-sm">
-            <User className="w-3.5 h-3.5" />
-            <span>Coach: {session.coach}</span>
-          </div>
         </div>
 
-        {/* More Options */}
-        <button className="text-[#94A3B8] hover:text-white transition-colors">
-          <MoreVertical className="w-5 h-5" />
-        </button>
+        {/* Scrollable container — shows max 3 cards */}
+        <div className="space-y-4 pr-2 max-h-105 overflow-y-auto scrollbar-thin">
+          {sessions.length > 0 ? (
+            sessions.map((session) => (
+              <SessionCard key={session.id} session={session} />
+            ))
+          ) : (
+            <div className="bg-[#0d1b2a] p-8 border border-[#1a2d42] rounded-lg text-center">
+              <p className="text-[#4a6274] text-sm">No upcoming sessions</p>
+              <p className="mt-1 text-[#4a6274] text-xs">
+                Purchase a package to get started
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* View All Modal */}
+      {modalOpen && (
+        <SessionModal sessions={sessions} onClose={() => setModalOpen(false)} />
+      )}
+    </>
   );
 }
 

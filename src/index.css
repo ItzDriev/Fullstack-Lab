@@ -7,6 +7,23 @@
   --alternating2: rgb(23, 25, 39);
 }
 
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #1a2d42;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #243b53;
+}
+
 /*Rotating border animation*/
 @property --border-angle {
   inherits: false;

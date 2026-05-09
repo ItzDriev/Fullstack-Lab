@@ -112,7 +112,7 @@ function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="w-full min-h-[calc(100vh-4rem)] bg-(--mainBG) flex flex-col items-center">
+      <main className="w-full min-h-[calc(100vh-4rem)] bg-(--mainBG) flex flex-col items-center pb-20">
         <ProfileHeader
           uploading={uploading}
           onAvatarClick={handleAvatarClick}
@@ -128,9 +128,19 @@ function ProfilePage() {
 
         {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
 
-        <section className="flex gap-40 mt-20">
-          <UpcomingSessions sessions={upcoming} />
-          <SessionHistory sessions={history} />
+        {/* Sessions Section */}
+        <section className="mt-16 px-8 w-full max-w-5xl">
+          <div className="flex gap-8">
+            {/* Left — Upcoming Sessions */}
+            <div className="shrink-0">
+              <UpcomingSessions sessions={upcoming} />
+            </div>
+
+            {/* Right — Session History */}
+            <div className="flex-1 min-w-0">
+              <SessionHistory sessions={history} />
+            </div>
+          </div>
         </section>
       </main>
       <Footer />
