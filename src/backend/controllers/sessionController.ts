@@ -84,3 +84,24 @@ export async function getAllUserSessions(
     res.status(500).json({ success: false, error: "Failed to fetch sessions" });
   }
 }
+
+export async function cancelSession(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const userId = res.locals.jwt?.userId || (req as any).user?.userId;
+    const { id } = req.params;
+
+    const session = await Session.findOneAndDelete({ _id: id, userId });
+
+    if (!session) {
+      res.status(404).json({ success: false, error: "Session not found" });
+      return;
+    }
+
+    res.json({ success: true, data: session });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Failed to cancel session" });
+  }
+}

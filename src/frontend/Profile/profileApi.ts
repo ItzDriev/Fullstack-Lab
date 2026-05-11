@@ -96,3 +96,22 @@ export async function uploadProfilePicture(base64: string) {
     return { success: false, error: "Failed to upload picture" };
   }
 }
+
+export async function cancelSession(sessionId: string) {
+  try {
+    const response = await fetch(`${API_URL}/api/sessions/${sessionId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    const res = await response.json();
+
+    if (res.success) {
+      return { success: true, data: res.data };
+    } else {
+      return { success: false, error: res.error };
+    }
+  } catch (error) {
+    return { success: false, error: "Failed to cancel session" };
+  }
+}

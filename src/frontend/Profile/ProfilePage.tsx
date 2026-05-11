@@ -10,6 +10,7 @@ import {
   fetchProfile,
   fetchUpcomingSessions,
   fetchSessionHistory,
+  cancelSession,
 } from "./profileApi.ts";
 
 interface ProfileData {
@@ -55,6 +56,14 @@ function ProfilePage() {
 
   function handleAvatarClick() {
     fileInputRef.current?.click();
+  }
+
+  async function handleCancelSession(sessionId: string) {
+    const result = await cancelSession(sessionId);
+
+    if (result.success) {
+      setUpcoming((prev) => prev.filter((s: any) => s.id !== sessionId));
+    }
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -133,7 +142,10 @@ function ProfilePage() {
           <div className="flex gap-8">
             {/* Left — Upcoming Sessions */}
             <div className="shrink-0">
-              <UpcomingSessions sessions={upcoming} />
+              <UpcomingSessions
+                sessions={upcoming}
+                onCancel={handleCancelSession}
+              />
             </div>
 
             {/* Right — Session History */}
