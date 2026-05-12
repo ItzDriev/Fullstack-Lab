@@ -14,6 +14,7 @@ import {
   fetchSessionHistory,
   cancelSession,
   completeSession,
+  fetchReviewStats,
 } from "./profileApi.ts";
 
 interface ProfileData {
@@ -33,6 +34,11 @@ function ProfilePage() {
   const [uploading, setUploading] = useState(false);
   const [ratingSession, setRatingSession] = useState<Session | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [stats, setStats] = useState({
+    totalReviews: 0,
+    averageRating: 0,
+    fiveStarCount: 0,
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +68,9 @@ function ProfilePage() {
 
     const historyResult = await fetchSessionHistory();
     if (historyResult.success) setHistory(historyResult.data);
+
+    const statsResult = await fetchReviewStats();
+    if (statsResult.success) setStats(statsResult.data);
   }
 
   async function handleCancelSession(sessionId: string) {
@@ -168,6 +177,33 @@ function ProfilePage() {
         />
 
         {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
+
+        <div className="flex gap-12 mt-8">
+          <div className="text-center">
+            <span className="font-bold text-red-400 text-3xl">
+              {stats.totalReviews}
+            </span>
+            <p className="mt-1 text-[#4a6274] text-xs uppercase tracking-wider">
+              Sessions reviewed
+            </p>
+          </div>
+          <div className="text-center">
+            <span className="font-bold text-red-400 text-3xl">
+              {stats.averageRating}
+            </span>
+            <p className="mt-1 text-[#4a6274] text-xs uppercase tracking-wider">
+              Avg rating
+            </p>
+          </div>
+          <div className="text-center">
+            <span className="font-bold text-red-400 text-3xl">
+              {stats.fiveStarCount}
+            </span>
+            <p className="mt-1 text-[#4a6274] text-xs uppercase tracking-wider">
+              5-star reviews
+            </p>
+          </div>
+        </div>
 
         <section className="mt-16 px-8 w-full max-w-5xl">
           <div className="flex gap-8">

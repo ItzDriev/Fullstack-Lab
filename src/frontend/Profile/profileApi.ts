@@ -139,3 +139,21 @@ export async function completeSession(sessionId: string, rating: number) {
     return { success: false, error: "Failed to complete session" };
   }
 }
+
+export async function fetchReviewStats() {
+  try {
+    const response = await fetch(`${API_URL}/api/reviews/stats`, {
+      credentials: "include",
+    });
+
+    const res = await response.json();
+
+    if (res.success) {
+      return { success: true, data: res.data };
+    } else {
+      return { success: false, error: res.error };
+    }
+  } catch (error) {
+    return { success: false, error: "Failed to fetch review stats" };
+  }
+}
