@@ -7,6 +7,43 @@ export async function register(req: Request, res: Response): Promise<void> {
   try {
     const { fullName, username, email, password } = req.body;
 
+    if (!fullName || !username || !email || !password) {
+      res
+        .status(400)
+        .json({ success: false, error: "All fields are required" });
+      return;
+    }
+
+    if (typeof fullName !== "string" || fullName.trim().length < 2) {
+      res.status(400).json({
+        success: false,
+        error: "Full name must be at least 2 characters",
+      });
+      return;
+    }
+
+    if (typeof username !== "string" || username.trim().length < 3) {
+      res.status(400).json({
+        success: false,
+        error: "Username must be at least 3 characters",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ success: false, error: "Invalid email format" });
+      return;
+    }
+
+    if (typeof password !== "string" || password.length < 8) {
+      res.status(400).json({
+        success: false,
+        error: "Password must be at least 8 characters",
+      });
+      return;
+    }
+
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
@@ -41,6 +78,18 @@ export async function login(req: Request, res: Response): Promise<void> {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
+
+    if (!username || !password) {
+      res
+        .status(400)
+        .json({ success: false, error: "Username and password are required" });
+      return;
+    }
+
+    if (typeof username !== "string" || typeof password !== "string") {
+      res.status(400).json({ success: false, error: "Invalid input format" });
+      return;
+    }
 
     if (!user) {
       res

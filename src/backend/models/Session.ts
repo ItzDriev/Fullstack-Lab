@@ -9,6 +9,7 @@ interface ISession {
   status: "upcoming" | "completed" | "cancelled";
   coach: string;
   topic: string;
+  rating: number;
 }
 
 const sessionSchema = new Schema<ISession>(
@@ -25,6 +26,7 @@ const sessionSchema = new Schema<ISession>(
     },
     coach: { type: String, default: "" },
     topic: { type: String, default: "" },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
   },
   { timestamps: true },
 );

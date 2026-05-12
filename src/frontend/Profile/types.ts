@@ -13,4 +13,5 @@ export interface HistoryEntry {
   date: string;
   coach: string;
   coachAvatar?: string;
+  rating: number;
 }

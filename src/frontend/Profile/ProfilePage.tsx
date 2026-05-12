@@ -6,11 +6,14 @@ import Footer from "../Navigation/Footer";
 import UpcomingSessions from "./UpcomingSessions";
 import SessionHistory from "./SessionHistory";
 import ProfileHeader from "./ProfileHeader";
+import RatingModal from "./RatingModal";
+import type { Session } from "./types.ts";
 import {
   fetchProfile,
   fetchUpcomingSessions,
   fetchSessionHistory,
   cancelSession,
+  completeSession,
 } from "./profileApi.ts";
 
 interface ProfileData {
@@ -28,6 +31,7 @@ function ProfilePage() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [ratingSession, setRatingSession] = useState<Session | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -39,6 +43,12 @@ function ProfilePage() {
 
     if (isLoggedIn) {
       loadProfileData();
+
+      const interval = setInterval(() => {
+        loadProfileData();
+      }, 30000);
+
+      return () => clearInterval(interval);
     }
   }, [isLoggedIn, loading, navigate]);
 
@@ -54,16 +64,38 @@ function ProfilePage() {
     if (historyResult.success) setHistory(historyResult.data);
   }
 
-  function handleAvatarClick() {
-    fileInputRef.current?.click();
-  }
-
   async function handleCancelSession(sessionId: string) {
     const result = await cancelSession(sessionId);
-
     if (result.success) {
       setUpcoming((prev) => prev.filter((s: any) => s.id !== sessionId));
     }
+  }
+
+  function handleCompleteClick(sessionId: string) {
+    const session = upcoming.find((s: any) => s.id === sessionId) as
+      | Session
+      | undefined;
+    if (session) {
+      setRatingSession(session);
+    }
+  }
+
+  async function handleRatingSubmit(sessionId: string, rating: number) {
+    const result = await completeSession(sessionId, rating);
+
+    if (result.success) {
+      setRatingSession(null);
+      setUpcoming((prev) => prev.filter((s: any) => s.id !== sessionId));
+
+      const historyResult = await fetchSessionHistory();
+      if (historyResult.success) setHistory(historyResult.data);
+    } else {
+      setError(result.error);
+    }
+  }
+
+  function handleAvatarClick() {
+    fileInputRef.current?.click();
   }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -137,18 +169,15 @@ function ProfilePage() {
 
         {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
 
-        {/* Sessions Section */}
         <section className="mt-16 px-8 w-full max-w-5xl">
           <div className="flex gap-8">
-            {/* Left — Upcoming Sessions */}
             <div className="shrink-0">
               <UpcomingSessions
                 sessions={upcoming}
                 onCancel={handleCancelSession}
+                onComplete={handleCompleteClick}
               />
             </div>
-
-            {/* Right — Session History */}
             <div className="flex-1 min-w-0">
               <SessionHistory sessions={history} />
             </div>
@@ -156,6 +185,14 @@ function ProfilePage() {
         </section>
       </main>
       <Footer />
+
+      {ratingSession && (
+        <RatingModal
+          session={ratingSession}
+          onSubmit={handleRatingSubmit}
+          onClose={() => setRatingSession(null)}
+        />
+      )}
     </>
   );
 }

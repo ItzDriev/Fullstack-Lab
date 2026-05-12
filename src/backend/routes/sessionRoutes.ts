@@ -5,6 +5,7 @@ import {
   getSessionHistory,
   getAllUserSessions,
   cancelSession,
+  completeSession,
 } from "../controllers/sessionController.ts";
 import { authenticate } from "../middleware/jwtMiddleware.ts";
 
@@ -15,5 +16,6 @@ router.get("/", authenticate, getAllUserSessions);
 router.get("/upcoming", authenticate, getUpcomingSessions);
 router.get("/history", authenticate, getSessionHistory);
 router.delete("/:id", authenticate, cancelSession);
+router.patch("/:id/complete", authenticate, completeSession);
 
 export default router;

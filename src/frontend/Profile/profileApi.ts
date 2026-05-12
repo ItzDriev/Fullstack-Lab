@@ -66,6 +66,7 @@ export async function fetchSessionHistory() {
           })
           .toUpperCase(),
         coach: s.coach || "TBD",
+        rating: s.rating || 0,
       }));
       return { success: true, data: mapped };
     } else {
@@ -113,5 +114,28 @@ export async function cancelSession(sessionId: string) {
     }
   } catch (error) {
     return { success: false, error: "Failed to cancel session" };
+  }
+}
+export async function completeSession(sessionId: string, rating: number) {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/sessions/${sessionId}/complete`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating }),
+        credentials: "include",
+      },
+    );
+
+    const res = await response.json();
+
+    if (res.success) {
+      return { success: true, data: res.data };
+    } else {
+      return { success: false, error: res.error };
+    }
+  } catch (error) {
+    return { success: false, error: "Failed to complete session" };
   }
 }

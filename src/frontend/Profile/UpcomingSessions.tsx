@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { MoreVertical, User, X } from "lucide-react";
+import { User, X, Check } from "lucide-react";
 import type { Session } from "./types.ts";
 
 interface UpcomingSessionsProps {
   sessions?: Session[];
   onCancel?: (id: string) => void;
+  onComplete?: (id: string) => void;
 }
 
-function UpcomingSessions({ sessions = [], onCancel }: UpcomingSessionsProps) {
+function UpcomingSessions({
+  sessions = [],
+  onCancel,
+  onComplete,
+}: UpcomingSessionsProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -30,6 +35,7 @@ function UpcomingSessions({ sessions = [], onCancel }: UpcomingSessionsProps) {
                 key={session.id}
                 session={session}
                 onCancel={onCancel}
+                onComplete={onComplete}
               />
             ))
           ) : (
@@ -47,6 +53,7 @@ function UpcomingSessions({ sessions = [], onCancel }: UpcomingSessionsProps) {
         <SessionModal
           sessions={sessions}
           onCancel={onCancel}
+          onComplete={onComplete}
           onClose={() => setModalOpen(false)}
         />
       )}
@@ -57,10 +64,12 @@ function UpcomingSessions({ sessions = [], onCancel }: UpcomingSessionsProps) {
 function SessionModal({
   sessions,
   onCancel,
+  onComplete,
   onClose,
 }: {
   sessions: Session[];
   onCancel?: (id: string) => void;
+  onComplete?: (id: string) => void;
   onClose: () => void;
 }) {
   return (
@@ -69,7 +78,6 @@ function SessionModal({
       onClick={onClose}
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
       <div
         className="z-10 relative flex flex-col bg-[#0a1628] shadow-2xl border border-[#1a2d42] rounded-lg w-full max-w-lg max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
@@ -90,7 +98,6 @@ function SessionModal({
             <X className="w-5 h-5" />
           </button>
         </div>
-
         <div className="space-y-4 p-6 overflow-y-auto scrollbar-thin">
           {sessions.length > 0 ? (
             sessions.map((session) => (
@@ -98,6 +105,7 @@ function SessionModal({
                 key={session.id}
                 session={session}
                 onCancel={onCancel}
+                onComplete={onComplete}
               />
             ))
           ) : (
@@ -114,22 +122,35 @@ function SessionModal({
 function SessionCard({
   session,
   onCancel,
+  onComplete,
 }: {
   session: Session;
   onCancel?: (id: string) => void;
+  onComplete?: (id: string) => void;
 }) {
   return (
     <div className="relative bg-[#0d1b2a] p-5 border border-[#1a2d42] hover:border-[#243b53] rounded-lg transition-colors">
-      {/* Cancel button */}
-      {onCancel && (
-        <button
-          onClick={() => onCancel(session.id)}
-          className="top-3 right-3 absolute text-[#4a6274] hover:text-red-400 transition-colors cursor-pointer"
-          title="Cancel session"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      )}
+      {/* Action buttons */}
+      <div className="top-3 right-3 absolute flex gap-2">
+        {onComplete && (
+          <button
+            onClick={() => onComplete(session.id)}
+            className="text-[#4a6274] hover:text-green-400 transition-colors cursor-pointer"
+            title="Mark as completed"
+          >
+            <Check className="w-4 h-4" />
+          </button>
+        )}
+        {onCancel && (
+          <button
+            onClick={() => onCancel(session.id)}
+            className="text-[#4a6274] hover:text-red-400 transition-colors cursor-pointer"
+            title="Cancel session"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
 
       <div>
         <span

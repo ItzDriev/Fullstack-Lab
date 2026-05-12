@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { Session } from "../models/Session.ts";
+import { Review } from "../models/Review.ts";
 
 export async function createSession(
   req: Request,
@@ -103,5 +104,49 @@ export async function cancelSession(
     res.json({ success: true, data: session });
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to cancel session" });
+  }
+}
+
+export async function completeSession(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    const userId = res.locals.jwt?.userId || (req as any).user?.userId;
+    const { id } = req.params;
+    const { rating } = req.body;
+
+    if (!rating || typeof rating !== "number" || rating < 1 || rating > 5) {
+      res
+        .status(400)
+        .json({ success: false, error: "Rating must be between 1 and 5" });
+      return;
+    }
+
+    const session = await Session.findOneAndUpdate(
+      { _id: id, userId, status: "upcoming" },
+      { status: "completed", rating },
+      { new: true },
+    );
+
+    if (!session) {
+      res
+        .status(404)
+        .json({ success: false, error: "Upcoming session not found" });
+      return;
+    }
+
+    // Create a review in the separate collection
+    await Review.create({
+      sessionId: session._id,
+      userId,
+      rating,
+    });
+
+    res.json({ success: true, data: session });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, error: "Failed to complete session" });
   }
 }
